@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة الطلبات | Secure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* إعدادات المتغيرات */
+        :root {
+            --primary: #1a1f3c;
+            --accent: #c7a86d;
+            --bg: #f4f6f8;
+            --white: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* جعل الصفحة تسمح بالاسكرول الطبيعي */
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+            overflow-y: auto;
+        }
+
+        /* القائمة الجانبية */
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .menu-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            text-decoration: none;
+            color: white;
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* منطقة المحتوى */
+        .main-content {
+            flex: 1;
+            margin-right: 260px;
+            padding: 25px;
+            min-height: 100vh;
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .head h2 {
+            margin: 0;
+            font-size: 20px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .table-box {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #eef2f5;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f8f9fb;
+            color: #666;
+            font-size: 13px;
+            padding: 15px;
+            text-align: right;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            vertical-align: top;
+            color: #333;
+        }
+
+        /* الأزرار والقوائم */
+        .status-select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-family: 'Cairo';
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .st-New {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        .st-Processing {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .st-Shipped {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .st-Canceled {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        /* === شاشة تسجيل الدخول الآمنة === */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: var(--primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* هذا السطر يمنع اختفاء الشاشة إلا بالجافاسكربت */
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-box h3 {
+            margin: 0 0 20px;
+            color: var(--primary);
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-box button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* === موبايل ريسبونسيف === */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                align-items: center;
+                padding: 10px 15px;
+                overflow-x: auto;
+                flex-shrink: 0;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .logo {
+                margin: 0;
+                padding-left: 10px;
+                font-size: 18px;
+                white-space: nowrap;
+            }
+
+            .menu-item {
+                margin: 0 0 0 5px;
+                white-space: nowrap;
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .main-content {
+                margin-right: 0;
+                padding: 15px;
+                width: 100%;
+            }
+
+            .table-box {
+                background: transparent;
+                box-shadow: none;
+                border: none;
+            }
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+                width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                background: #fff;
+                margin-bottom: 15px;
+                padding: 15px;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+                border: 1px solid #eee;
+            }
+
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px dashed #eee;
+                text-align: left;
+            }
+
+            td:last-child {
+                border: none;
+                display: block;
+                padding-top: 10px;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                font-size: 12px;
+                color: #888;
+                margin-left: 10px;
+            }
+
+            td[data-label="التفاصيل"] {
+                display: block;
+                text-align: right;
+            }
+        }
+
+        /* Premium Toast Styles */
+        #toastContainer {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(26, 31, 60, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: rgba(229, 57, 53, 0.95);
+        }
+
+        .toast i {
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- شاشة الدخول (تحجب الموقع بالكامل) -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <i class="fa-solid fa-user-shield" style="font-size:40px;color:var(--accent);margin-bottom:15px"></i>
+            <h3>التحقق من الأمان</h3>
+            <input type="password" id="passInput" placeholder="أدخل كلمة المرور"
+                onkeypress="if(event.keyCode==13) doLogin()">
+            <button id="loginBtn" onclick="doLogin()">تسجيل الدخول</button>
+            <div id="errMsg" style="color:#e53935;font-size:13px;margin-top:10px;display:none;font-weight:bold">كلمة
+                المرور خاطئة ⛔</div>
+        </div>
+    </div>
+
+    <!-- المحتوى -->
+    <div id="toastContainer"></div>
+    <div class="sidebar">
+        <div class="logo">NJM ORDERS</div>
+        <a href="admin.html" class="menu-item"><i class="fa-solid fa-box"></i> المنتجات</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-receipt"></i> الطلبات</a>
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-shop"></i> المتجر</a>
+        <a href="javascript:void(0)" onclick="logout()" class="menu-item"
+            style="margin-top:auto; background:rgba(229,57,53,0.2); color:#ffcdd2"><i
+                class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a>
+    </div>
+
+    <div class="main-content">
+        <div class="head">
+            <h2>طلبات العملاء</h2>
+            <div style="display:flex;gap:10px;align-items:center">
+                <select id="statusFilter" class="status-select" style="width:150px;margin:0" onchange="filterOrders()">
+                    <option value="all">كل الطلبات</option>
+                    <option value="جديد">جديد 🆕</option>
+                    <option value="تجهيز">تجهيز 🛠️</option>
+                    <option value="شحن">شحن 🚚</option>
+                    <option value="ملغي">ملغي ❌</option>
+                </select>
+                <button onclick="getOrders()"
+                    style="background:#fff;border:1px solid #ddd;padding:5px 15px;border-radius:20px;cursor:pointer"><i
+                        class="fa-solid fa-rotate-right"></i> تحديث</button>
+            </div>
+        </div>
+
+        <div class="table-box">
+            <table id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>الوقت</th>
+                        <th>العميل</th>
+                        <th>Gmail</th>
+                        <th>العنوان</th>
+                        <th>التفاصيل</th>
+                        <th>الإجمالي</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+            </table>
+            <div id="loader" style="padding:40px;text-align:center;display:none;color:#777">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'https://script.google.com/macros/s/AKfycbx6-X1mYlV0eO8_ySzKii9jTEFppd6035DuMi1SqA4QkLV97lbhOHzTZQdlqz6MtQ54/exec';
+
+        // عند تحميل الصفحة
+        window.onload = function () {
+            const savedPass = localStorage.getItem('njm_secure_pass');
+            // إذا كان هناك باسورد، حاول الدخول به
+            if (savedPass) {
+                document.getElementById('passInput').value = savedPass;
+                doLogin(true); // true تعني "دخول تلقائي"
+            }
+            // في كل الأحوال، شاشة الدخول ظاهرة ولن تختفي إلا إذا كان الباسورد صحيح
+        };
+
+        function doLogin(isAuto = false) {
+            const pass = document.getElementById('passInput').value.trim();
+            if (!pass) return;
+
+            const btn = document.getElementById('loginBtn');
+            const errMsg = document.getElementById('errMsg');
+
+            if (!isAuto) {
+                btn.innerText = 'جاري التحقق...';
+                btn.disabled = true;
+            }
+            errMsg.style.display = 'none';
+
+            // نقوم بطلب بسيط للسيرفر للتحقق من كلمة المرور (مثلاً طلب الطلبات)
+            fetch(`${API}?action=getOrders&password=${encodeURIComponent(pass)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        // فشل الدخول
+                        errMsg.style.display = 'block';
+                        errMsg.innerText = "كلمة المرور غير صحيحة ❌";
+                        btn.innerText = 'تسجيل الدخول';
+                        btn.disabled = false;
+                        localStorage.removeItem('njm_secure_pass'); // مسح الباسورد القديم
+                    } else {
+                        // نجاح الدخول
+                        document.getElementById('loginScreen').style.display = 'none'; // الآن فقط نخفي الشاشة
+                        localStorage.setItem('njm_secure_pass', pass); // حفظ الباسورد الصحيح
+                        renderData(data); // عرض البيانات التي جلبناها للتو
+                    }
+                })
+                .catch(err => {
+                    if (!isAuto) {
+                        errMsg.style.display = 'block';
+                        errMsg.innerText = "خطأ في الاتصال، حاول مرة أخرى";
+                        btn.disabled = false;
+                        btn.innerText = 'تسجيل الدخول';
+                    }
+                });
+        }
+
+        // هذه الدالة لتحديث البيانات فقط عند الضغط على زر التحديث
+        function getOrders() {
+            const pass = localStorage.getItem('njm_secure_pass');
+            document.getElementById('rows').innerHTML = '';
+            document.getElementById('loader').style.display = 'block';
+
+            fetch(`${API}?action=getOrders&password=${encodeURIComponent(pass)}`)
+                .then(r => r.json())
+                .then(data => {
+                    renderData(data);
+                }).catch(e => {
+                    toast("خطأ في التحميل", "error");
+                });
+        }
+
+        function toast(m, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            t.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${m}</span>`;
+            container.appendChild(t);
+            setTimeout(() => t.classList.add('active'), 10);
+            setTimeout(() => {
+                t.classList.remove('active');
+                setTimeout(() => t.remove(), 400);
+            }, 3000);
+        }
+
+        let allOrders = []; // حفظ النسخة الأصلية
+        function renderData(data) {
+            allOrders = data;
+            filterOrders();
+        }
+
+        function filterOrders() {
+            const status = document.getElementById('statusFilter').value;
+            const data = (status === 'all')
+                ? allOrders
+                : allOrders.filter(o => o.status.includes(status) || (status === 'ملغي' && o.status === 'ملغي'));
+
+            _renderTable(data);
+        }
+
+        function _renderTable(data) {
+            document.getElementById('loader').style.display = 'none';
+            const tbody = document.getElementById('rows');
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px">لا يوجد طلبات</td></tr>';
+                return;
+            }
+
+            const pass = localStorage.getItem('njm_secure_pass'); // نحتاجه لتغيير الحالة
+
+            tbody.innerHTML = data.map(o => {
+                let cls = 'st-New';
+                if (o.status.includes('تجهيز')) cls = 'st-Processing';
+                if (o.status.includes('شحن')) cls = 'st-Shipped';
+                if (o.status == 'ملغي') cls = 'st-Canceled';
+
+                return `
+            <tr>
+                <td data-label="الوقت">
+                    <div style="font-weight:bold">${formatDate(o.date).date}</div>
+                    <div style="font-size:12px;color:#888">${formatDate(o.date).time}</div>
+                </td>
+                <td data-label="العميل">
+                    <b>${o.name}</b><br>
+                    <span style="font-family:Arial;font-size:13px">${o.phone}</span>
+                    <a href="https://wa.me/2${o.phone}" target="_blank" style="margin-right:5px;text-decoration:none">💬</a>
+                </td>
+                <td data-label="Gmail" style="font-family:sans-serif;font-size:13px;word-break:break-all">
+                    ${o.email || 'غير متوفر'}
+                </td>
+                <td data-label="العنوان">${o.address}</td>
+                <td data-label="التفاصيل" style="white-space:pre-wrap;font-size:13px">${o.details}</td>
+                <td data-label="الإجمالي"><b style="color:#1a1f3c">${o.total} ج.م</b></td>
+                <td data-label="الحالة">
+                    <select class="status-select ${cls}" onchange="changeSt(${o.row}, this.value)">
+                        <option value="جديد" ${o.status == 'جديد' ? 'selected' : ''}>جديد</option>
+                        <option value="جاري التجهيز" ${o.status.includes('تجهيز') ? 'selected' : ''}>تجهيز</option>
+                        <option value="تم الشحن" ${o.status.includes('شحن') ? 'selected' : ''}>شحن</option>
+                        <option value="ملغي" ${o.status == 'ملغي' ? 'selected' : ''}>ملغي</option>
+                    </select>
+                </td>
+            </tr>`;
+            }).join('');
+        }
+
+        function changeSt(row, val) {
+            const pass = localStorage.getItem('njm_secure_pass');
+            toast("جاري تحديث الحالة...");
+            fetch(API, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'updateStatus', password: pass, row: row, status: val })
+            }).then(() => {
+                toast("تم التحديث بنجاح ✅");
+                // تحديث الحالة في المصفوفة المحلية محلياً بدون تحميل الشيت بالكامل
+                const order = allOrders.find(o => o.row === row);
+                if (order) order.status = val;
+            });
+        }
+
+        function formatDate(d) {
+            const date = new Date(d);
+            return { date: date.toLocaleDateString('ar-EG'), time: date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }) };
+        }
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('njm_secure_pass');
+                location.reload();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

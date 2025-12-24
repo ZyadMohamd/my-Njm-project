@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#c7a86d">
+  <title>NJM STORE | متجر نجم للموضة العصرية</title>
+  <meta name="description" content="اكتشفي أحدث صيحات الموضة العصرية في متجر NJM. جودة عالية وتصاميم فخمة تليق بكِ.">
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <!-- SEO & Social Sharing -->
+  <meta property="og:title" content="NJM STORE | متجر نجم للموضة">
+  <meta property="og:description" content="تسوقي أحدث الفساتين والاكسسوارات بجودة عالمية.">
+  <meta property="og:image" content="https://njm-store10.vercel.app/logo.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+  <script>
+    function scrollToSearch() {
+      const searchBox = document.querySelector('.search-box');
+      if (searchBox) {
+        window.scrollTo({ top: searchBox.offsetTop - 100, behavior: 'smooth' });
+        document.getElementById('searchInput').focus();
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="toastContainer"
+    style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;width:auto;pointer-events:none">
+  </div>
+
+  <header>
+    <!-- LOGO -->
+    <a href="#" class="logo">
+      <svg width="120" height="50" viewBox="0 0 140 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="'Times New Roman', serif"
+          font-style="italic" font-size="36" font-weight="bold" fill="#ffffff">
+          N<tspan fill="#c7a86d">J</tspan>M
+        </text>
+        <line x1="40" y1="45" x2="100" y2="45" stroke="#c7a86d" stroke-width="1" />
+      </svg>
+    </a>
+
+    <div class="nav-icons">
+      <a href="track.html" class="icon-btn" title="تتبع الطلب"><i class="fa-solid fa-truck-fast"></i></a>
+      <a href="https://www.instagram.com/njm_store10" target="_blank" class="icon-btn"><i
+          class="fa-brands fa-instagram"></i></a>
+      <button class="icon-btn" id="langBtn">EN</button>
+      <button class="icon-btn" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+      <div class="cart-btn-wrapper" id="cartBtn">
+        <button class="icon-btn"><i class="fa-solid fa-bag-shopping"></i></button>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="heroSec">
+      <div class="hero-content">
+        <h2 data-i18n="hero_title">Discover the new luxury collection</h2>
+        <button class="cta-btn" onclick="document.getElementById('productsGrid').scrollIntoView()"
+          data-i18n="hero_btn">Shop now</button>
+      </div>
+    </section>
+
+    <div class="container" id="shopSec">
+      <div class="filters-bar">
+        <div class="filter-groups" id="filterContainer"></div>
+        <div class="search-box">
+          <i class="fa-solid fa-search" style="color:var(--muted)"></i>
+          <input type="text" id="searchInput" data-i18n-placeholder="search_ph" placeholder="بحث...">
+        </div>
+      </div>
+      <div id="searchCount" class="search-results-info"></div>
+      <section class="product-grid" id="productsGrid"></section>
+      <div id="noResults" style="display:none;text-align:center;padding:50px;color:var(--muted)">
+        <i class="fa-solid fa-box-open" style="font-size:50px;margin-bottom:15px;display:block"></i>
+        <p data-i18n="cart_empty">لا توجد نتائج بحث</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-section">
+        <h4 data-i18n="footer_about">عن NJM</h4>
+        <p>اكتشفي الفخامة في كل تفصيلة. نحن نقدم أرقى صيحات الموضة بجودة تليق بكِ.</p>
+        <div class="social-links">
+          <a href="https://www.instagram.com/njm_store10?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+            target="_blank"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://wa.me/201004195426" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h4 data-i18n="footer_links">روابط سريعة</h4>
+        <ul>
+          <li><a href="track.html" data-i18n="footer_track">تتبع الطلب</a></li>
+          <li><a href="javascript:void(0)" onclick="openInfoModal()" data-i18n="footer_policy">سياسة الاستبدال</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 NJM STORE. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Info Modal -->
+  <div class="modal-overlay" id="infoModal">
+    <div class="modal-content info-modal-content">
+      <button class="close-modal" onclick="closeInfoModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="info-body">
+        <h2 style="color:var(--accent);margin-bottom:20px">سياسة المتجر 📋</h2>
+        <div class="info-item">
+          <h4><i class="fa-solid fa-truck"></i> مدة الشحن</h4>
+          <p>يتم توصيل الطلبات في خلال 3-5 أيام عمل لجميع المحافظات.</p>
+        </div>
+        <div class="info-item">
+          <h4><i class="fa-solid fa-rotate-left"></i> سياسة الاستبدال</h4>
+          <p>يمكن الاستبدال أو الاسترجاع في خلال 14 يوماً من استلام الطلب بشرط أن يكون المنتج بحالته الأصلية وفاتورته.
+          </p>
+        </div>
+        <div class="info-item">
+          <h4><i class="fa-solid fa-headset"></i> التواصل</h4>
+          <p>لأي استفسار يمكنك التواصل معنا عبر واتساب أو الاتصال المباشر على رقم المتجر.</p>
+        </div>
+        <button class="add-to-cart-btn" style="margin-top:20px" onclick="closeInfoModal()">فهمت ذلك</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="cart-overlay" id="overlay"></div>
+  <div id="productModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div class="m-img-box" id="modalImgBox">
+        <img id="mImg" src="" alt="">
+        <button class="modal-slider-btn prev" id="modalPrev" style="display:none" onclick="slideModalImg(-1)"><i
+            class="fa-solid fa-chevron-left"></i></button>
+        <button class="modal-slider-btn next" id="modalNext" style="display:none" onclick="slideModalImg(1)"><i
+            class="fa-solid fa-chevron-right"></i></button>
+        <div class="modal-dots" id="modalDots"></div>
+      </div>
+      <div class="m-details">
+        <span id="mCat"></span>
+        <h2 id="mName"></h2>
+        <div class="m-price"><span id="mPrice">0</span> <small data-i18n="curr">EGP</small></div>
+        <p id="mDesc"></p>
+        <div id="mSizesContainer"></div>
+        <button class="add-to-cart-btn" id="mAddBtn"><span data-i18n="add_cart">Add to Cart</span> <i
+            class="fa-solid fa-cart-plus"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart -->
+  <aside class="drawer" id="cartDrawer">
+    <div class="d-header">
+      <h3 data-i18n="cart_title">Shopping Cart</h3>
+      <span class="clear-cart" id="clearCartBtn" data-i18n="clear_cart"
+        style="font-size:12px;cursor:pointer;color:#e53935;text-decoration:underline">Clear</span>
+    </div>
+    <div class="d-body" id="cartItems"></div>
+    <div class="d-footer">
+      <div class="f-row"
+        style="display:flex;justify-content:space-between;margin-bottom:20px;font-weight:900;font-size:18px">
+        <span data-i18n="total">Total:</span> <span><span id="totalPrice">0</span> <span
+            data-i18n="curr">EGP</span></span>
+      </div>
+      <div class="checkout-form">
+        <input type="text" id="cName" data-i18n-placeholder="input_name" placeholder="Name" required>
+        <input type="tel" id="cPhone" data-i18n-placeholder="input_phone" placeholder="Phone" required>
+        <input type="email" id="cEmail" data-i18n-placeholder="input_email" placeholder="Gmail" required>
+        <input type="text" id="cAddr" data-i18n-placeholder="input_addr" placeholder="Address" required>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn">
+        <span data-i18n="order_now">Confirm Order</span> <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+    </div>
+  </aside>
+
+  <!-- Success Modal -->
+  <div class="success-modal" id="successModal">
+    <div class="success-card">
+      <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+      <h2 style="margin-bottom:10px" data-i18n="order_success">تم إرسال الطلب بنجاح ✅</h2>
+      <p style="color:var(--muted);margin-bottom:25px">سيتم التواصل معك عبر الهاتف لتأكيد الطلب قريباً.</p>
+      <div style="display:flex; flex-direction:column; gap:10px">
+        <button class="add-to-cart-btn" onclick="window.location.href='track.html'"><span data-i18n="footer_track">تتبع
+            طلبك الآن</span> <i class="fa-solid fa-truck-fast"></i></button>
+        <button class="add-to-cart-btn" style="background:#eee; color:#111" onclick="closeSuccessModal()"><span
+            data-i18n="hero_btn">متابعة التسوق</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top -->
+  <button id="backToTop" onclick="scrollToTop()"><i class="fa-solid fa-arrow-up"></i></button>
+
+  <!-- Mobile Tab Bar -->
+  <nav class="mobile-tab-bar">
+    <div class="tab-item active" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <i class="fa-solid fa-house"></i>
+      <span data-i18n="filter_all">الرئيسية</span>
+    </div>
+    <div class="tab-item" onclick="scrollToSearch()">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span data-i18n="search_ph">بحث</span>
+    </div>
+    <div class="tab-item" onclick="document.getElementById('cartBtn').click()">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span data-i18n="cart_title">السلة</span>
+    </div>
+    <div class="tab-item" onclick="window.location.href='track.html'">
+      <i class="fa-solid fa-truck-fast"></i>
+      <span data-i18n="footer_track">التتبع</span>
+    </div>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

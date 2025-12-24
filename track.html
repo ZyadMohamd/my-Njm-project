@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1f3c">
+  <title>تتبع طلبك | NJM</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #1a1f3c;
+      color: #fff;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      color: #333;
+      padding: 30px 25px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      color: #c7a86d;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    p {
+      margin: 0 0 25px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .input-box {
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+      background: #f9f9f9;
+      text-align: center;
+    }
+
+    input:focus {
+      border-color: #c7a86d;
+      background: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #1a1f3c;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background: #c7a86d;
+      color: #000;
+    }
+
+    #result {
+      margin-top: 25px;
+      display: none;
+      text-align: right;
+      border-top: 1px dashed #ddd;
+      padding-top: 20px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 15px;
+      width: fit-content;
+    }
+
+    .st-New {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+    }
+
+    .st-Processing {
+      background: #fff8e1;
+      color: #f57f17;
+      border: 1px solid #ffecb3;
+    }
+
+    .st-Shipped {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+
+    .st-Canceled {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .data-row span:first-child {
+      color: #666;
+    }
+
+    .data-row span:last-child {
+      font-weight: 700;
+      color: #000;
+    }
+
+    .back-link {
+      margin-top: 25px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.3s;
+      padding: 10px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+    }
+
+    .back-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Premium Toast Styles */
+    #toastContainer {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10001;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      color: #333;
+      padding: 12px 25px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: rgba(229, 57, 53, 0.95);
+      color: #fff;
+    }
+
+    .toast i {
+      color: #c7a86d;
+    }
+
+    .toast.error i {
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="toastContainer"></div>
+
+  <div class="container">
+    <i class="fa-solid fa-truck-fast" style="font-size: 35px; color: #c7a86d; margin-bottom: 15px;"></i>
+    <h2>تتبع طلبك</h2>
+    <p>أدخل رقم الهاتف المسجل في الطلب لمعرفة حالة أحدث شحنة.</p>
+
+    <div class="input-box">
+      <input type="tel" id="phone" placeholder="رقم الهاتف (مثال: 010xxxx)" autocomplete="tel">
+    </div>
+
+    <button onclick="track()" id="trackBtn">
+      <span>بحث عن الطلب</span>
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+
+    <div id="result">
+      <div style="font-size:12px; color:#888; margin-bottom:8px;">حالة الطلب:</div>
+      <div style="text-align: center;"><span id="stBadge" class="status-badge st-New">...</span></div>
+
+      <div class="data-row">
+        <span>تاريخ الطلب:</span>
+        <span id="orderDate"></span>
+      </div>
+      <div class="data-row">
+        <span>الإجمالي:</span>
+        <span id="orderTotal" style="color:#1a1f3c"></span>
+      </div>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-link">
+    <i class="fa-solid fa-arrow-right"></i> العودة للمتجر
+  </a>
+
+  <script>
+    // ✅ تأكد من استخدام آخر رابط Exec محدث
+    const API = "https://script.google.com/macros/s/AKfycbx6-X1mYlV0eO8_ySzKii9jTEFppd6035DuMi1SqA4QkLV97lbhOHzTZQdlqz6MtQ54/exec";
+
+    async function track() {
+      const phoneInput = document.getElementById('phone');
+      const phone = phoneInput.value.trim();
+
+      if (!phone || phone.length < 8) {
+        toast('يرجى كتابة رقم هاتف صحيح', 'error');
+        phoneInput.focus();
+        return;
+      }
+
+      const btn = document.getElementById('trackBtn');
+      const resultDiv = document.getElementById('result');
+      const stBadge = document.getElementById('stBadge');
+
+      // تغيير حالة الزر
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري البحث...';
+      btn.disabled = true;
+      resultDiv.style.display = 'none';
+
+      try {
+        const res = await fetch(`${API}?action=trackOrder&phone=${phone}`);
+        const data = await res.json();
+
+        if (data.found) {
+          resultDiv.style.display = 'block';
+
+          // تحديد لون وشكل الحالة
+          let st = data.status || 'جديد';
+          let cls = 'st-New';
+          if (st.includes('تجهيز')) cls = 'st-Processing';
+          if (st.includes('شحن') || st.includes('طريق')) cls = 'st-Shipped';
+          if (st.includes('لغي') || st.includes('رفض')) cls = 'st-Canceled';
+
+          stBadge.className = `status-badge ${cls}`;
+          stBadge.innerText = st;
+
+          // تعبئة البيانات (عرض التاريخ فقط بدون وقت لتوفير المساحة)
+          document.getElementById('orderDate').innerText = data.date.split(',')[0];
+          document.getElementById('orderTotal').innerText = data.total + ' ج.م';
+
+        } else {
+          toast('لم يتم العثور على طلبات لهذا الرقم حالياً.', 'error');
+        }
+
+      } catch (e) {
+        toast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.', 'error');
+      } finally {
+        // إعادة الزر لوضعه الطبيعي
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    function toast(m, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+      t.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${m}</span>`;
+      container.appendChild(t);
+      setTimeout(() => t.classList.add('active'), 10);
+      setTimeout(() => {
+        t.classList.remove('active');
+        setTimeout(() => t.remove(), 400);
+      }, 3000);
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة المنتجات والإعدادات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #1a1f3c;
+            --accent: #c7a86d;
+            --bg: #f4f6f8;
+            --white: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--accent);
+        }
+
+        .menu-item {
+            padding: 12px;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .menu-item.active {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-right: 260px;
+            padding: 25px;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 25px;
+            border: 1px solid #eee;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .full-w {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input[type="email"],
+        input[type="tel"] {
+            direction: ltr;
+            text-align: left;
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .img-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .img-prev {
+            max-height: 100px;
+            display: none;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-save {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+        }
+
+        .btn-dark {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-dark:hover {
+            background: #0f1225;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            text-align: right;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+        /* Login Screen */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: var(--primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-box input {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .login-box button {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px 15px;
+                flex-shrink: 0;
+            }
+
+            .main-content {
+                margin-right: 0;
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+                width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                background: #fff;
+                margin-bottom: 15px;
+                padding: 15px;
+                border: 1px solid #eee;
+                border-radius: 8px;
+            }
+
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px dashed #eee;
+            }
+
+            td:last-child {
+                display: block;
+                padding-top: 10px;
+                text-align: center;
+                border: none;
+            }
+
+            td img {
+                width: 50px;
+                height: 50px;
+                border-radius: 4px;
+            }
+        }
+
+        /* Premium Toast Styles */
+        #toastContainer {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(26, 31, 60, 0.95);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: rgba(229, 57, 53, 0.95);
+        }
+
+        .toast i {
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <i class="fa-solid fa-lock" style="font-size:40px;color:var(--accent);margin-bottom:15px"></i>
+            <h3>التحقق من المدير</h3>
+            <input type="password" id="passInput" placeholder="أدخل كلمة المرور"
+                onkeypress="if(event.keyCode==13) doLogin()">
+            <button id="loginBtn" onclick="doLogin()">تسجيل الدخول</button>
+            <div id="errMsg" style="color:red;margin-top:10px;display:none;font-size:13px;font-weight:bold">كلمة المرور
+                خطأ ❌</div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="logo">NJM ADMIN</div>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-box"></i> المنتجات والإعدادات</a>
+        <a href="orders.html" class="menu-item"><i class="fa-solid fa-receipt"></i> الطلبات</a>
+        <a href="index.html" class="menu-item"><i class="fa-solid fa-shop"></i> المتجر</a>
+        <a href="javascript:void(0)" onclick="logout()" class="menu-item"
+            style="margin-top:auto; background:rgba(229,57,53,0.2); color:#ffcdd2"><i
+                class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</a>
+    </div>
+
+    <!-- Content -->
+    <div id="toastContainer"></div>
+    <div class="main-content">
+
+        <!-- ⚙️ 1. قسم الإعدادات -->
+        <div class="card" style="border-top: 3px solid var(--accent);">
+            <h3 style="margin-top:0"><i class="fa-solid fa-gear"></i> إعدادات المتجر والإشعارات</h3>
+            <div class="form-grid">
+                <div class="full-w">
+                    <label>📧 إيميل المدير (لوصول الإشعارات)</label>
+                    <input type="email" id="adminEmailInput" placeholder="example@gmail.com">
+                </div>
+                <div class="full-w">
+                    <label>📞 رقم هاتف المتجر (للتواصل)</label>
+                    <input type="text" id="adminPhoneInput" placeholder="01xxxxxxxxx">
+                </div>
+            </div>
+            <button onclick="saveSettings()" class="btn-dark" style="margin-top:15px;width:auto;padding: 10px 30px;">
+                حفظ الإعدادات <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+        </div>
+
+        <!-- 📦 2. قسم المنتجات -->
+        <div class="card">
+            <h2 id="formTitle" style="margin-top:0">إضافة منتج جديد</h2>
+            <form id="prodForm">
+                <div class="form-grid">
+                    <div><label>الاسم</label><input id="pName" required></div>
+                    <div><label>السعر</label><input id="pPrice" type="number" required></div>
+                    <div><label>القسم</label>
+                        <select id="pCat">
+                            <option value="men">رجالي</option>
+                            <option value="women">حريمي</option>
+                            <option value="accessories">اكسسوارات</option>
+                            <option value="sale">تصفيات</option>
+                        </select>
+                    </div>
+                    <div><label>ID</label><input id="pId" readonly style="background:#eee;color:#777"></div>
+
+                    <div class="full-w"><label>المقاسات (بفاصلة)</label><input id="pSizes" placeholder="S, M, L, XL">
+                    </div>
+                    <div class="full-w"><label>الوصف</label><textarea id="pDesc"></textarea></div>
+                    <div class="full-w">
+                        <label>الصور</label>
+                        <div class="img-box" onclick="document.getElementById('file').click()">
+                            <span>اختر صور 📸</span>
+                            <div id="previews"
+                                style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:10px">
+                            </div>
+                        </div>
+                        <input type="file" id="file" hidden multiple accept="image/*" onchange="previewImg()">
+                        <input type="hidden" id="pImgUrl">
+                    </div>
+                </div>
+                <button id="saveBtn" class="btn-save" style="margin-top:15px">حفظ المنتج</button>
+                <button type="button" id="canBtn" style="background:#dc3545;margin-top:10px;display:none;color:#fff"
+                    onclick="resetForm()">إلغاء</button>
+            </form>
+        </div>
+
+        <!-- 3. الجدول -->
+        <div class="card">
+            <h3>المنتجات المتاحة</h3>
+            <table id="prodTable">
+                <thead>
+                    <tr>
+                        <th>الصورة</th>
+                        <th>الاسم</th>
+                        <th>السعر</th>
+                        <th>تحكم</th>
+                    </tr>
+                </thead>
+                <tbody id="rows"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // ✅ الرابط (تأكد أنه محدث بـ New Version)
+        const API = 'https://script.google.com/macros/s/AKfycbx6-X1mYlV0eO8_ySzKii9jTEFppd6035DuMi1SqA4QkLV97lbhOHzTZQdlqz6MtQ54/exec';
+
+        let filesToUpload = [];
+        let isEditing = false;
+
+        // عند التحميل، تأكد من الدخول
+        window.onload = function () {
+            const saved = localStorage.getItem('njm_secure_pass');
+            if (saved) {
+                document.getElementById('passInput').value = saved;
+                doLogin(true);
+            }
+        }
+
+        // ===================================
+        // 🔐 تسجيل الدخول
+        // ===================================
+        function doLogin(isAuto = false) {
+            const pass = document.getElementById('passInput').value.trim();
+            const btn = document.getElementById('loginBtn');
+            const err = document.getElementById('errMsg');
+
+            if (!pass) return;
+
+            if (!isAuto) {
+                btn.innerText = 'تحقق...';
+                btn.disabled = true;
+            }
+            err.style.display = 'none';
+
+            fetch(`${API}?action=getProducts&password=${encodeURIComponent(pass)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        err.style.display = 'block';
+                        localStorage.removeItem('njm_secure_pass');
+                        btn.innerText = 'دخول';
+                        btn.disabled = false;
+                    } else {
+                        localStorage.setItem('njm_secure_pass', pass);
+                        document.getElementById('loginScreen').style.display = 'none';
+                        renderTable(data);
+                        resetForm();
+                        fetchSettings(); // ✅ استدعاء الإعدادات فور الدخول
+                    }
+                }).catch((e) => {
+                    console.error(e);
+                    if (!isAuto) {
+                        toast("خطأ في الاتصال، تأكد من أن الرابط صحيح وتم عمل Deploy جديد.", "error");
+                        btn.disabled = false;
+                    }
+                });
+        }
+
+        function toast(m, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            t.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${m}</span>`;
+            container.appendChild(t);
+            setTimeout(() => t.classList.add('active'), 10);
+            setTimeout(() => {
+                t.classList.remove('active');
+                setTimeout(() => t.remove(), 400);
+            }, 3000);
+        }
+
+        // ===================================
+        // ⚙️ إعدادات الإشعارات (المعدلة)
+        // ===================================
+        function fetchSettings() {
+            const pass = localStorage.getItem('njm_secure_pass');
+            fetch(`${API}?action=getSettings&password=${encodeURIComponent(pass)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.admin_email) document.getElementById('adminEmailInput').value = data.admin_email;
+                    if (data.admin_phone) document.getElementById('adminPhoneInput').value = data.admin_phone;
+                });
+        }
+
+        async function saveSettings() {
+            const email = document.getElementById('adminEmailInput').value;
+            const phone = document.getElementById('adminPhoneInput').value;
+            const pass = localStorage.getItem('njm_secure_pass');
+
+            if (!email || !email.includes('@')) {
+                return toast('يرجى كتابة بريد إلكتروني صحيح', 'error');
+            }
+
+            const btn = document.querySelector('button[onclick="saveSettings()"]');
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الحفظ...';
+            btn.disabled = true;
+
+            try {
+                // ✅ إضافة الـ Header لتجنب CORS Error
+                await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'saveSettings',
+                        password: pass,
+                        email: email,
+                        phone: phone
+                    })
+                });
+                toast('✅ تم حفظ الإعدادات بنجاح!');
+            } catch (e) {
+                console.error(e);
+                toast('حدث خطأ في الاتصال. تأكد أنك أنشأت صفحة "Settings" في الشيت وعملت New Deployment.', 'error');
+            } finally {
+                btn.innerHTML = oldHtml;
+                btn.disabled = false;
+            }
+        }
+
+        // ===================================
+        // 📦 إدارة المنتجات (Upload + Save)
+        // ===================================
+        document.getElementById('prodForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            btn.innerText = 'جاري المعالجة...';
+            btn.disabled = true;
+
+            const pass = localStorage.getItem('njm_secure_pass');
+            let imgStr = document.getElementById('pImgUrl').value;
+
+            // 1. رفع الصور
+            if (filesToUpload.length > 0) {
+                try {
+                    btn.innerText = `جاري رفع صور (${filesToUpload.length})...`;
+                    const newUrls = [];
+                    for (let i = 0; i < filesToUpload.length; i++) {
+                        const b64 = await toBase64(filesToUpload[i]);
+                        // ✅ نستخدم نفس الـ header هنا كمان للأمان
+                        const r = await fetch(API, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({
+                                action: 'uploadImage',
+                                password: pass,
+                                fileData: b64,
+                                fileName: `prod_${Date.now()}_${i}.jpg`
+                            })
+                        });
+                        const d = await r.json();
+                        if (d.url) newUrls.push(d.url);
+                    }
+                    const existing = imgStr ? imgStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                    imgStr = [...existing, ...newUrls].join(', ');
+                } catch (er) {
+                    console.error(er);
+                    toast('فشل رفع الصور', 'error');
+                    btn.innerText = 'حفظ';
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            // 2. حفظ بيانات المنتج
+            btn.innerText = 'حفظ البيانات...';
+            const obj = {
+                action: isEditing ? 'editProduct' : 'addProduct',
+                password: pass,
+                id: document.getElementById('pId').value,
+                name: document.getElementById('pName').value,
+                price: document.getElementById('pPrice').value,
+                sale: '',
+                category: document.getElementById('pCat').value,
+                badge: '',
+                sizes: document.getElementById('pSizes').value,
+                desc: document.getElementById('pDesc').value,
+                img: imgStr
+            };
+
+            await fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(obj)
+            });
+
+            toast(isEditing ? 'تم التعديل' : 'تمت الإضافة');
+            resetForm();
+            doLogin(true); // إعادة تحميل الجدول
+        };
+
+        // ===================================
+        // 📋 عرض الجدول والتحكم
+        // ===================================
+        function renderTable(data) {
+            document.getElementById('rows').innerHTML = data.map(p => {
+                const firstImg = p.img ? p.img.split(',')[0] : '';
+                return `
+                <tr>
+                    <td><img src="${firstImg}" style="width:50px;height:50px;object-fit:cover"></td>
+                    <td>
+                        <b>${p.name}</b><br>
+                        <span style="font-size:12px;color:#777">${p.category}</span>
+                    </td>
+                    <td>${p.price}</td>
+                    <td>
+                        <button onclick='editItem(${JSON.stringify(p)})' style="background:#007bff;width:auto;padding:5px 10px;font-size:12px;margin-left:5px">✏️</button>
+                        <button onclick='delItem(${p.id})' style="background:#dc3545;width:auto;padding:5px 10px;font-size:12px">🗑️</button>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        function editItem(p) {
+            isEditing = true;
+            document.getElementById('formTitle').innerText = 'تعديل المنتج';
+            document.getElementById('pId').value = p.id;
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pPrice').value = p.price;
+            document.getElementById('pCat').value = p.category || p.catKey;
+            document.getElementById('pSizes').value = p.sizes || "";
+            document.getElementById('pDesc').value = p.desc || "";
+            document.getElementById('pImgUrl').value = p.img || "";
+
+            filesToUpload = [];
+            document.getElementById('previews').innerHTML = '';
+            if (p.img) {
+                p.img.split(',').forEach(u => {
+                    const img = document.createElement('img');
+                    img.src = u.trim();
+                    img.className = 'img-prev';
+                    img.style.display = 'block';
+                    document.getElementById('previews').appendChild(img);
+                });
+            }
+
+            document.getElementById('saveBtn').innerText = 'تعديل وحفظ';
+            document.getElementById('canBtn').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        async function delItem(id) {
+            if (!confirm('هل أنت متأكد من الحذف؟')) return;
+            const pass = localStorage.getItem('njm_secure_pass');
+
+            await fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: 'deleteProduct', id, password: pass })
+            });
+            toast('تم الحذف');
+            doLogin(true);
+        }
+
+        // ===================================
+        // 🧹 أدوات مساعدة
+        // ===================================
+        function resetForm() {
+            isEditing = false;
+            document.getElementById('prodForm').reset();
+            document.getElementById('formTitle').innerText = 'إضافة منتج جديد';
+            document.getElementById('pId').value = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('previews').innerHTML = '';
+            document.getElementById('saveBtn').innerText = 'حفظ المنتج';
+            document.getElementById('canBtn').style.display = 'none';
+            filesToUpload = [];
+        }
+
+        function previewImg() {
+            const files = document.getElementById('file').files;
+            filesToUpload = Array.from(files);
+            const box = document.getElementById('previews');
+            box.innerHTML = '';
+
+            filesToUpload.forEach(f => {
+                const r = new FileReader();
+                r.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-prev';
+                    img.style.display = 'block';
+                    box.appendChild(img);
+                }
+                r.readAsDataURL(f);
+            });
+        }
+
+        function toBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('njm_secure_pass');
+                location.reload();
+            }
+        }
+    </script>
+
+</body>
+
+</html>
